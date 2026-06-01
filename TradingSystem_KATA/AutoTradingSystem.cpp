@@ -2,8 +2,10 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <vector>
 
 #include "StockerBrockerDriver.cpp"
+#include "TimingStrategy.cpp"
 
 enum StockerBrocker {
 	KIWER,
@@ -28,6 +30,11 @@ public:
 			return false;
 		ownsDriver = true;
 		return true;
+	}
+
+	// 매매 전략 주입 (DI) - Runtime 중 교체 가능
+	void setStrategy(ITimingStrategy* strat) {
+		strategy = strat;
 	}
 
 	// 테스트용 mock 주입 오버로드 (소유권 없음 - delete 하지 않음)
@@ -76,49 +83,47 @@ public:
 
 	bool buyNiceTiming(string code, int netPrice) {
 		if (selectedStockerBrocker == nullptr) return false;
+		if (strategy == nullptr) return false;
 		if (code.empty()) return false;
 		if (netPrice <= 0) return false;
 
-		// 200ms 간격으로 3회 시세를 조회한다.
-		int p1 = selectedStockerBrocker->currentPrice(code);
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
-		int p2 = selectedStockerBrocker->currentPrice(code);
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
-		int p3 = selectedStockerBrocker->currentPrice(code);
+		std::vector<int> prices;
+		for (int i = 0; i < 3; i++) {
+			prices.push_back(selectedStockerBrocker->currentPrice(code));
+			if (i < 2)
+				std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		}
 
-		// 상승 추세(p1 < p2 < p3)가 아니면 매수하지 않는다.
-		if (!(p1 < p2 && p2 < p3)) return false;
+		if (!strategy->shouldBuy(prices)) return false;
 
-		// 총금액을 마지막 가격으로 나눈 최대 수량만큼 마지막 가격에 매수한다.
-		int amount = netPrice / p3;
+		int amount = netPrice / prices.back();
 		if (amount <= 0) return false;
 
-		selectedStockerBrocker->buy(code, amount, p3);
+		selectedStockerBrocker->buy(code, amount, prices.back());
 		return true;
 	}
 
 	bool sellNiceTiming(string code, int amount) {
 		if (selectedStockerBrocker == nullptr) return false;
+		if (strategy == nullptr) return false;
 		if (code.empty()) return false;
 		if (amount <= 0) return false;
 
-		int prices[3];
+		std::vector<int> prices;
 		for (int i = 0; i < 3; i++) {
-			prices[i] = selectedStockerBrocker->currentPrice(code);
+			prices.push_back(selectedStockerBrocker->currentPrice(code));
 			if (i < 2)
 				std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
 
-		bool isDownTrend = (prices[0] > prices[1]) && (prices[1] > prices[2]);
-		if (!isDownTrend)
-			return false;
+		if (!strategy->shouldSell(prices)) return false;
 
-		selectedStockerBrocker->sell(code, amount, prices[2]);
+		selectedStockerBrocker->sell(code, amount, prices.back());
 		return true;
 	}
 
 private:
 	StockerBrockerDriverInterface* selectedStockerBrocker = nullptr;
 	bool ownsDriver = false;
-
+	ITimingStrategy* strategy = nullptr;
 };

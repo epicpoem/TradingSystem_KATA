@@ -143,7 +143,11 @@
     <ClCompile Include="kiwer_api.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="nemo_api.cpp" />
+    <ClCompile Include="OrderCommand.cpp" />
+    <ClCompile Include="OrderSchedulerTest.cpp" />
     <ClCompile Include="StockerBrockerDriver.cpp" />
+    <ClCompile Include="TimingStrategy.cpp" />
+    <ClCompile Include="TimmingStrategyTest.cpp" />
     <ClCompile Include="TradingSystemTest.cpp" />
   </ItemGroup>
   <ItemGroup>
