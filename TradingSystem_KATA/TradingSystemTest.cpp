@@ -16,10 +16,12 @@ public:
 class TradingSystemFixture : public Test {
 public:
 	NiceMock<MockStockerBrockerDriver> mockDriver;
+	RisingTrendStrategy strategy;
 	AutoTradingSystem tradingSystem;
 
 	void SetUp() override {
 		tradingSystem.selectStockBrocker(&mockDriver);
+		tradingSystem.setStrategy(&strategy);
 	}
 };
 
