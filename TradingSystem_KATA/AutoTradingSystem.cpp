@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <thread>
+#include <chrono>
 
 #include "StockerBrockerDriver.cpp"
 
@@ -67,6 +69,18 @@ public:
 	}
 
 	bool sellNiceTiming(string code, int amount) {
+		int prices[3];
+		for (int i = 0; i < 3; i++) {
+			prices[i] = selectedStockerBrocker->currentPrice(code);
+			if (i < 2)
+				std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		}
+
+		bool isDownTrend = (prices[0] > prices[1]) && (prices[1] > prices[2]);
+		if (!isDownTrend)
+			return false;
+
+		selectedStockerBrocker->sell(code, amount, prices[2]);
 		return true;
 	}
 
