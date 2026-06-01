@@ -45,6 +45,6 @@ public:
 	}
 
 private : 
-	StockerBrockerDriver selectedStockerBrocker;
+	StockerBrockerDriverInterface selectedStockerBrocker;
 
 };
