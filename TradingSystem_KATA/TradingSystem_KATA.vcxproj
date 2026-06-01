@@ -139,9 +139,12 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AutoTradingSystem.cpp" />
     <ClCompile Include="kiwer_api.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="nemo_api.cpp" />
+    <ClCompile Include="StockerBrockerDriver.cpp" />
+    <ClCompile Include="TradingSystemTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
