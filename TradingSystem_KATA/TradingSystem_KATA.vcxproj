@@ -144,6 +144,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="nemo_api.cpp" />
     <ClCompile Include="StockerBrockerDriver.cpp" />
+    <ClCompile Include="TimingStrategy.cpp" />
+    <ClCompile Include="TimingStrategyTest.cpp" />
     <ClCompile Include="TradingSystemTest.cpp" />
   </ItemGroup>
   <ItemGroup>
