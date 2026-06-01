@@ -37,6 +37,9 @@ public:
 
 	//로그인
 	bool login(string id, string pass) {
+		if (selectedStockerBrocker == nullptr) return false;
+		if (id.empty() || pass.empty()) return false;
+		selectedStockerBrocker->login(id, pass);
 		return true;
 	}
 
@@ -51,8 +54,12 @@ public:
 	}
 
 	//현재가 확인
-	bool getPrice(string code) {
-		return true;
+	int getPrice(string code) {
+		if (selectedStockerBrocker == nullptr) return -1;
+		if (code.empty()) return -1;
+		int price = selectedStockerBrocker->currentPrice(code);
+		if (price == 0) return -1;
+		return price;
 	}
 
 	bool buyNiceTiming(string code, int netPrice) {
