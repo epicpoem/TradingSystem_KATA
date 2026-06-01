@@ -65,9 +65,6 @@ public:
 
 	//(종목코드, 가격, 수량) - 매도
 	bool sell(string code, int price, int amount) {
-		if (selectedStockerBrocker == nullptr) return false;
-		if (code.empty() || price <= 0 || amount <= 0) return false;
-		selectedStockerBrocker->sell(code, amount, price);
 		return true;
 	}
 
@@ -104,10 +101,6 @@ public:
 	}
 
 	bool sellNiceTiming(string code, int amount) {
-		if (selectedStockerBrocker == nullptr) return false;
-		if (code.empty()) return false;
-		if (amount <= 0) return false;
-
 		int prices[3];
 		for (int i = 0; i < 3; i++) {
 			prices[i] = selectedStockerBrocker->currentPrice(code);
@@ -127,5 +120,4 @@ private:
 	StockerBrockerDriverInterface* selectedStockerBrocker = nullptr;
 	bool ownsDriver = false;
 	ITimingStrategy* strategy = nullptr;
-
 };

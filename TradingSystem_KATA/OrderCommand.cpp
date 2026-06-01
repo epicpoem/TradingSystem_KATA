@@ -24,7 +24,8 @@ struct IOrderCommand {
 class BuyOrder : public IOrderCommand {
 public:
 	BuyOrder(StockerBrockerDriverInterface* driver, std::string code, int price, int amount)
-		: driver(driver), code(code), price(price), amount(amount) {}
+		: driver(driver), code(code), price(price), amount(amount) {
+	}
 
 	void execute() override {
 		driver->buy(code, amount, price);
@@ -46,7 +47,8 @@ private:
 class SellOrder : public IOrderCommand {
 public:
 	SellOrder(StockerBrockerDriverInterface* driver, std::string code, int price, int amount)
-		: driver(driver), code(code), price(price), amount(amount) {}
+		: driver(driver), code(code), price(price), amount(amount) {
+	}
 
 	void execute() override {
 		driver->sell(code, amount, price);
@@ -83,7 +85,8 @@ public:
 				logger->log("[START] " + entry.order->getDescription());
 				entry.order->execute();
 				logger->log("[END] " + entry.order->getDescription());
-			} else {
+			}
+			else {
 				remaining.push_back(entry);
 			}
 		}
