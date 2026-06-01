@@ -4,6 +4,7 @@
 #include <chrono>
 
 #include "StockerBrockerDriver.cpp"
+#include "TimingStrategy.cpp"
 
 enum StockerBrocker {
 	KIWER,
@@ -28,6 +29,11 @@ public:
 			return false;
 		ownsDriver = true;
 		return true;
+	}
+
+	// 매매 전략 주입 (DI) - Runtime 중 교체 가능
+	void setStrategy(ITimingStrategy* strat) {
+		strategy = strat;
 	}
 
 	// 테스트용 mock 주입 오버로드 (소유권 없음 - delete 하지 않음)
@@ -120,5 +126,5 @@ public:
 private:
 	StockerBrockerDriverInterface* selectedStockerBrocker = nullptr;
 	bool ownsDriver = false;
-
+	ITimingStrategy* strategy = nullptr;
 };
